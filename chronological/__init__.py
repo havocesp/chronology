@@ -32,7 +32,8 @@ async def _search(q, docs, engine="ada"):
     return response
 
 
-async def _completion(prompt, engine="ada", max_tokens=64, temperature=0.7, top_p=1, stop=None, presence_penalty=0, frequency_penalty=0, echo=False, n=1, stream=False, logprobs=None, best_of=1, logit_bias={}):
+async def _completion(prompt, engine="ada", max_tokens=64, temperature=0.7, top_p=1, stop=None, presence_penalty=0, frequency_penalty=0, echo=False, n=1, stream=False, logprobs=None, best_of=1, logit_bias=None):
+    logit_bias = {} if logit_bias is None else logit_bias
     logger.debug("""CONFIG:
     Prompt: {0}
     Temperature: {1}
@@ -150,10 +151,11 @@ async def gather(*args):
 # Wrappers
 
 
-async def cleaned_completion(prompt, engine="ada", max_tokens=64, temperature=0.7, top_p=1, stop=None, presence_penalty=0, frequency_penalty=0, echo=False, n=1, stream=False, logprobs=None, best_of=1, logit_bias={}):
+async def cleaned_completion(prompt, engine="ada", max_tokens=64, temperature=0.7, top_p=1, stop=None, presence_penalty=0, frequency_penalty=0, echo=False, n=1, stream=False, logprobs=None, best_of=1, logit_bias=None):
     '''
     Wrapper for OpenAI API completion. Returns whitespace trimmed result from GPT-3.
     '''
+    logit_bias = {} if logit_bias is None else logit_bias
     resp = await _completion(prompt,
                              engine=engine,
                              max_tokens=max_tokens,
@@ -171,10 +173,11 @@ async def cleaned_completion(prompt, engine="ada", max_tokens=64, temperature=0.
     return _trimmed_fetch_response(resp, n)
 
 
-async def raw_completion(prompt, engine="ada", max_tokens=64, temperature=0.7, top_p=1, stop=None, presence_penalty=0, frequency_penalty=0, echo=False, n=1, stream=False, logprobs=None, best_of=1, logit_bias={}):
+async def raw_completion(prompt, engine="ada", max_tokens=64, temperature=0.7, top_p=1, stop=None, presence_penalty=0, frequency_penalty=0, echo=False, n=1, stream=False, logprobs=None, best_of=1, logit_bias=None):
     '''
     Wrapper for OpenAI API completion. Returns raw result from GPT-3.
     '''
+    logit_bias = {} if logit_bias is None else logit_bias
     resp = await _completion(prompt,
                              engine=engine,
                              max_tokens=max_tokens,
